@@ -953,7 +953,7 @@ const [openGallery, setOpenGallery] = useState(false);
                 subtitle: "زاوية مختلفة",
               },
             ],
-          }, // ← كان لازم القوس ده يتقفل قبل العناصر التالية
+          }, 
           { label: "جناح امامي يمين", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
           { label: "كشاف شمال", Stats: "⚠️", info: "الكشاف الشمال يحتاج تغيير." },
           { label: "باب خلفي يمين", Stats: "✔️",info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات."  },
@@ -999,7 +999,7 @@ const [openGallery, setOpenGallery] = useState(false);
     },
   ],
 };
-  const [Filterr2, setFilterr2] = useState("specifics3"); // يبدأ مفتوح على "جميع نقاط الفحص"
+  const [Filterr2, setFilterr2] = useState("specifics3"); 
   const Fixed = {
   itimis4: [
     {
@@ -1007,7 +1007,7 @@ const [openGallery, setOpenGallery] = useState(false);
       title: "فحص الطريق ",
       type: "details",
    carInformation1: {
-        images: [iallbackImage, pallbackImage] // أو مسارات من public زي "/img1.png"
+        images: [iallbackImage, pallbackImage] 
       },
   
      descriptionPoints5: [
@@ -1220,7 +1220,7 @@ const [openGallery, setOpenGallery] = useState(false);
     },
   ],
 };
-  const [Filterr3, setFilterr3] = useState("specifics4"); // يبدأ مفتوح على "جميع نقاط الفحص"
+  const [Filterr3, setFilterr3] = useState("specifics4"); 
 
 const Aircondetion = {
   itimis6: [
@@ -1229,7 +1229,7 @@ const Aircondetion = {
       title: "  نظام التكيف ",
       type: "details",
    carInformation1: {
-        images: [iallbackImage, pallbackImage] // أو مسارات من public زي "/img1.png"
+        images: [iallbackImage, pallbackImage] 
       },
   
      descriptionPoints00: [
@@ -1396,7 +1396,7 @@ const Aircondetion = {
                 subtitle: "زاوية مختلفة",
               },
             ],
-          }, // ← كان لازم القوس ده يتقفل قبل العناصر التالية
+          },
           { label: "جناح امامي يمين", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
           { label: "كشاف شمال", Stats: "⚠️", info: "الكشاف الشمال يحتاج تغيير." },
           { label: "باب خلفي يمين", Stats: "✔️",info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات."  },
@@ -1443,8 +1443,7 @@ const Aircondetion = {
   ],
 };
 
-  const [Filterr5, setFilterr5] = useState("specifics6"); // يبدأ مفتوح على "جميع نقاط الفحص"
-
+  const [Filterr5, setFilterr5] = useState("specifics6"); 
 
 
 
@@ -1456,7 +1455,7 @@ const Aircondetion = {
       title: "  المكابح والسلامه",
       type: "details",
    carInformation1: {
-        images: [iallbackImage, pallbackImage] // أو مسارات من public زي "/img1.png"
+        images: [iallbackImage, pallbackImage] 
       },
   
      descriptionPoints8: [
@@ -1623,7 +1622,7 @@ const Aircondetion = {
                 subtitle: "زاوية مختلفة",
               },
             ],
-          }, // ← كان لازم القوس ده يتقفل قبل العناصر التالية
+          }, 
           { label: "جناح امامي يمين", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
           { label: "كشاف شمال", Stats: "⚠️", info: "الكشاف الشمال يحتاج تغيير." },
           { label: "باب خلفي يمين", Stats: "✔️",info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات."  },
@@ -1669,7 +1668,7 @@ const Aircondetion = {
     },
   ],
 };
-  const [Filterr6, setFilterr6] = useState("specifics7"); // يبدأ مفتوح على "جميع نقاط الفحص"
+  const [Filterr6, setFilterr6] = useState("specifics7"); 
    const Bosch = {
   itimis8: [
     {
@@ -1677,7 +1676,7 @@ const Aircondetion = {
       title: "   للسلامه Boush فحص ",
       type: "details",
    carInformation1: {
-        images: [iallbackImage, pallbackImage] // أو مسارات من public زي "/img1.png"
+        images: [iallbackImage, pallbackImage] 
       },
   
      descriptionPoints9: [
@@ -2007,7 +2006,7 @@ const Aircondetion = {
                 subtitle: "زاوية مختلفة",
               },
             ],
-          }, // ← كان لازم القوس ده يتقفل قبل العناصر التالية
+          }, 
           
         ],
         
@@ -2044,7 +2043,7 @@ const Aircondetion = {
                 </Disclosure.Button>
 
                 <Disclosure.Panel className="px-4 py-2  bg-white dark:bg-black rounded-b-md border border-t-0 border-gray-200">
-                  {/* لو القسم تفاصيل */}
+                
                   {section.type === "details" ? (
                     <div className="space-y-6">
   {/* مربعات المعلومات */}
@@ -2197,9 +2196,6 @@ const Aircondetion = {
     className="w-20 h-20 rounded-full object-cover"
   />
 
-  {/* السهم متراكب فوق الصورة */}
- 
-
   <span className="mt-3 text-lg font-bold">القيمة التسويقية</span>
 </div>
 
@@ -2284,8 +2280,6 @@ const Aircondetion = {
     
   </div>
 </div>
-
-{/* قسم الإضافات */}
 {/* قسم الإضافات */}
 <div className="bg-white dark:bg-black border border-white dark:border-white shadow rounded-lg">
   <h3 className="text-lg font-bold mb-3 text-gray-900 dark:text-white ">الإضافات</h3>
@@ -2450,7 +2444,7 @@ const Aircondetion = {
   </ul>   
 </div>
 </div>         
-      {/* تقرير الفحص */}
+      
 
 <div className="flex gap-2 mb-4">
   <button 
@@ -2841,7 +2835,7 @@ const Aircondetion = {
 })()}
 
 
-{/* عرض FullScreenGallery لو متفتح */}
+
 {openGallery && (
   <FullScreenGallery
     images={openGallery.images}
@@ -3181,8 +3175,6 @@ const Aircondetion = {
   })()
 )}
 
-
-{/* عرض FullScreenGallery لو متفتح */}
 {openGallery && (
   <FullScreenGallery
     images={openGallery.images}
@@ -3190,7 +3182,6 @@ const Aircondetion = {
     onClose={() => setOpenGallery(null)}
   />
 )}
-
 
 
 <div className="p-2 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-bold text-base rounded">
@@ -3514,7 +3505,7 @@ const Aircondetion = {
 )}
 
 
-{/* عرض FullScreenGallery لو متفتح */}
+
 {openGallery && (
   <ScreenGallery
     images={openGallery.images}
@@ -3680,7 +3671,6 @@ const src = Aircondetion.itimis6[0]?.Power[Filterr5] ?? [];
 )}
 
 
-{/* عرض FullScreenGallery لو متفتح */}
 {openGallery && (
   <ScreenGallery
     images={openGallery.images}
