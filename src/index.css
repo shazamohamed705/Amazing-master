@@ -197,26 +197,37 @@ body {
 }
 
 
-@media (max-width: 639px) {
-  .home {
-    height: 40dvh !important;
-  }
-}
-
-@media (min-width: 640px) {
-  .home {
-    height: 90dvh !important;
-  }
-}
+/* أزرار السلايدر للأجهزة الصغيرة والمتوسطة */
 @media (max-width: 768px) {
   .say .slick-prev,
   .say .slick-next {
-    top: 113% !important;
+    top: 113% !important; /* تتحرك تحت السلايدر */
   }
+
+  .say .slick-prev {
+    left: 30px !important;
+  }
+
   .say .slick-next {
     left: 105px !important;
   }
-  .slick-prev {
-    left: 30px !important;
+}
+
+/* للأجهزة الأكبر (أجهزة لابتوب وما فوق) */
+@media (min-width: 769px) {
+  .say .slick-prev,
+  .say .slick-next {
+    top: 50% !important; /* في منتصف السلايدر عموديًا */
+    transform: translateY(-50%);
+  }
+
+  .say .slick-prev {
+    left: -25px; /* على حسب التصميم */
+  }
+
+  .say .slick-next {
+    right: -25px; /* على حسب التصميم */
+    left: auto;
   }
 }
+
