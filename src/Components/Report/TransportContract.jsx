@@ -390,71 +390,44 @@ const TransportContract = () => {
 
             <table className="trip-table" style={{ borderCollapse: "collapse", width: "100%", border: "2px solid #000" }}>
               <thead>
-                {/* الهيدر الأساسي بالإنجليزي */}
                 <tr>
+                  <th style={{ backgroundColor: "#fafa04", color: "#000", padding: "8px", border: "1px solid #000" }}>DATE#</th>
                   <th style={{ backgroundColor: "#fafa04", color: "#000", padding: "8px", border: "1px solid #000" }} colSpan="3">
                     FLIGHT PATH#
                   </th>
-                  <th style={{ backgroundColor: "#fafa04", color: "#000", padding: "8px", border: "1px solid #000" }}>Date</th>
                 </tr>
-
-                {/* الهيدر بالعربي */}
                 <tr>
+                  <th style={{ backgroundColor: "#e4f6f8", color: "black", padding: "8px", border: "1px solid #000" }}>تاريخ الرحلة</th>
                   <th style={{ backgroundColor: "#e4f6f8", color: "black", padding: "8px", border: "1px solid #000" }} colSpan="3">
                     مسار الرحلة
                   </th>
-                  <th style={{ backgroundColor: "#e4f6f8", color: "black", padding: "8px", border: "1px solid #000" }}>التاريخ</th>
                 </tr>
               </thead>
 
               <tbody>
+                {/* صف السهم الأخضر */}
                 <tr>
-                  {/* Start City */}
-                  <td style={{ textAlign: "center", fontWeight: "bold", color: "green", padding: "10px", border: "1px solid #000" }}>
-                    <span>{trip?.departure_location}</span>{" "}
-                    <span
-                      style={{
-                        backgroundColor: "#e4f6f8",
-                        color: "#155724",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                        padding: "3px 10px",
-                        borderRadius: "999px",
-                        marginLeft: "6px",
-                        border: "1px solid #155724",
-                      }}
-                    >
-                      Start
-                    </span>
+                  <td className="date-cell" rowSpan="2" style={{ textAlign: "center", fontWeight: "bold", color: "red", fontSize: "22px", border: "1px solid #000", padding: "12px" }}>
+                    {trip?.departure_time && new Date(trip?.departure_time).toLocaleDateString("ar-EG")}
                   </td>
+                  <td colSpan="3" className="path-arrow-cell" style={{ border: "1px solid #000", padding: 0 }}>
+                    <div className="path-arrow-wrap">
+                      <span className="label-start">Start</span>
+                      <span className="label-finish">Finish</span>
+                    </div>
+                  </td>
+                </tr>
 
-                  {/* TO */}
+                {/* صف أسماء المدن */}
+                <tr>
+                  <td style={{ textAlign: "center", fontWeight: "bold", color: "green", padding: "10px", border: "1px solid #000" }}>
+                    {trip?.departure_location}
+                  </td>
                   <td style={{ textAlign: "center", fontWeight: "bold", background: "black", color: "white", padding: "10px", border: "1px solid #000", width: "80px" }}>
                     TO
                   </td>
-
-                  {/* Finish City */}
                   <td style={{ textAlign: "center", fontWeight: "bold", color: "red", padding: "10px", border: "1px solid #000" }}>
-                    <span>{trip?.destination_location}</span>{" "}
-                    <span
-                      style={{
-                        backgroundColor: "#f8d7da",
-                        color: "#721c24",
-                        fontSize: "11px",
-                        fontWeight: "bold",
-                        padding: "3px 10px",
-                        borderRadius: "999px",
-                        marginLeft: "6px",
-                        border: "1px solid #721c24",
-                      }}
-                    >
-                      Finish
-                    </span>
-                  </td>
-
-                  {/* Date */}
-                  <td style={{ textAlign: "center", fontWeight: "bold", color: "red", fontSize: "16px", border: "1px solid #000", padding: "10px" }}>
-                    {trip?.departure_time && new Date(trip?.departure_time).toLocaleDateString("ar-EG")}
+                    {trip?.destination_location}
                   </td>
                 </tr>
               </tbody>
