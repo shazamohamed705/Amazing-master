@@ -10,6 +10,7 @@ import iallbackImage from '../../assets/img20.png'
 import pallbackImage  from  '../../assets/img23.png'
 import  FullScreenGallery from "../FullScreenGallery/FullScreenGallery";
 import ScreenGallery from "../ScreenGallery/ScreenGallery";
+import FlightPathTable from "../FlightPathTable/FlightPathTable";
 
 const inspections = [
   { name: "الهيكل الخارجي", status: "success", icon: <FaCarSide /> },
@@ -2022,6 +2023,11 @@ const Aircondetion = {
   <div className="flex-grow">
 
       <h1 className="text-black dark:text-white text-base -2xl font-bold mb-6">تقرير فحص السيارة</h1>
+
+      {/* جدول مسار الرحلة */}
+      <div className="mb-6">
+        <FlightPathTable date="18/06/2025" from="محافظة الحقل" to="مكة المكرمة" />
+      </div>
 
       <div className="space-y-4">
         {reportData.sections.map((section, idx) => (
