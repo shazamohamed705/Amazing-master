@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/TransportContract.css";
 import logo from "../../logo.svg";
@@ -10,6 +10,56 @@ const TransportContract = () => {
   const [vehicle, setVehicle] = useState(null);
   const [driver, setDriver] = useState(null);
   const [passengers, setPassengers] = useState([]);
+  const contractRef = useRef(null);
+
+  const copyUsingLegacy = (text) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+    } finally {
+      document.body.removeChild(textarea);
+    }
+  };
+
+  const handleCopyText = async () => {
+    const text = contractRef.current?.innerText || "";
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        copyUsingLegacy(text);
+      }
+      alert("تم نسخ النص");
+    } catch (e) {
+      copyUsingLegacy(text);
+      alert("تم نسخ النص");
+    }
+  };
+
+  const handleCopyHtml = async () => {
+    const html = contractRef.current?.innerHTML || "";
+    const plain = contractRef.current?.innerText || "";
+    try {
+      if (navigator.clipboard && window.ClipboardItem) {
+        const data = new ClipboardItem({
+          "text/html": new Blob([html], { type: "text/html" }),
+          "text/plain": new Blob([plain], { type: "text/plain" }),
+        });
+        await navigator.clipboard.write([data]);
+      } else {
+        copyUsingLegacy(html);
+      }
+      alert("تم نسخ HTML الصفحة");
+    } catch (e) {
+      copyUsingLegacy(html);
+      alert("تم نسخ HTML الصفحة");
+    }
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -36,6 +86,11 @@ const TransportContract = () => {
 
   return (
     <>
+      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", margin: "10px auto", maxWidth: 900 }}>
+        <button onClick={handleCopyText} style={{ padding: "6px 10px", border: "1px solid #000", background: "#fffa96", cursor: "pointer" }}>نسخ النص</button>
+        <button onClick={handleCopyHtml} style={{ padding: "6px 10px", border: "1px solid #000", background: "#d6f5ff", cursor: "pointer" }}>نسخ كود HTML</button>
+      </div>
+      <div ref={contractRef} className="contract-copy-wrapper">
       {/* الصفحة الأولى */}
       <div className="contract-outer">
         <div className="contract-inner">
@@ -520,6 +575,7 @@ const TransportContract = () => {
             علي جميع السائقين الالتزام بتعليمات و توجيهات هيئة النقل و تعليمات مؤسسة ابداعات العبور للنقل
           </div>
         </div>
+      </div>
       </div>
     </>
   );
