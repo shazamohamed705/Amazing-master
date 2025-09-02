@@ -61,6 +61,22 @@ const TransportContract = () => {
     }
   };
 
+  const handleCopyRendered = () => {
+    const node = contractRef.current;
+    if (!node) return;
+    const selection = window.getSelection();
+    const range = document.createRange();
+    selection.removeAllRanges();
+    range.selectNode(node);
+    selection.addRange(range);
+    try {
+      document.execCommand("copy");
+      alert("تم نسخ الصفحة كاملة بالمحتوى المعروض");
+    } finally {
+      selection.removeAllRanges();
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -86,9 +102,10 @@ const TransportContract = () => {
 
   return (
     <>
-      <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", margin: "10px auto", maxWidth: 900 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", margin: "10px auto", maxWidth: 900 }}>
         <button onClick={handleCopyText} style={{ padding: "6px 10px", border: "1px solid #000", background: "#fffa96", cursor: "pointer" }}>نسخ النص</button>
         <button onClick={handleCopyHtml} style={{ padding: "6px 10px", border: "1px solid #000", background: "#d6f5ff", cursor: "pointer" }}>نسخ كود HTML</button>
+        <button onClick={handleCopyRendered} style={{ padding: "6px 10px", border: "1px solid #000", background: "#c8ffc8", cursor: "pointer" }}>نسخ الصفحة كاملة</button>
       </div>
       <div ref={contractRef} className="contract-copy-wrapper">
       {/* الصفحة الأولى */}
