@@ -1,0 +1,418 @@
+:root {
+  --th-color: #0e0f0f;
+  --accent: #c91414;
+  color: #000;
+}
+.contract-outer {
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 900px;
+  background: #fff;
+  border: 2px solid #000;
+  font-family: "Arial", sans-serif;
+  direction: rtl;
+}
+
+/* الهيدر */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.logo-box {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.logo-text {
+  text-align: right;
+  line-height: 1.5;
+}
+
+.main-title {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  position: relative;
+  top: -20px;
+}
+.sub-title {
+  position: relative;
+  top: -20px;
+}
+.center-title {
+  width: 40%;
+  text-align: center;
+}
+
+.center-title .title-logo {
+  width: 100px;
+  margin-bottom: 3px;
+}
+
+.contract-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin: 15px 0;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.contract-row p {
+  margin: 0;
+}
+
+.red-text {
+  color: red;
+  font-weight: bold;
+}
+
+.contract-intro {
+  font-size: 14px;
+  line-height: 1.8;
+  text-align: justify;
+  color: #000;
+}
+
+.my-table.first-party {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 13px;
+  table-layout: auto;
+}
+
+.my-table.first-party th,
+.my-table.first-party td {
+  border: 1px solid #000;
+  padding: 10px 15px;
+  text-align: center;
+  vertical-align: middle;
+  color: #000;
+  white-space: nowrap;
+}
+
+.car-trips {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.car-trips th,
+.car-trips {
+  border: 1px solid #000;
+  padding: 10px 15px;
+  color: #000;
+}
+
+.car-trips th {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+
+.car-trips td {
+  background: #fff;
+}
+
+.wrapper-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 15px;
+}
+
+.image-box {
+  flex-shrink: 0;
+}
+
+.image-box img {
+  max-width: 400px;
+  height: auto;
+  margin-top: 20px;
+  display: block;
+}
+
+.driver-notice-box {
+  border: 1px solid #004080;
+  padding: 8px;
+  font-size: 11px;
+  width: fit-content;
+}
+
+.driver-notice-box {
+  display: flex;
+  border: 1px solid #004080;
+  font-family: "Arial", sans-serif;
+  font-size: 11px;
+  width: 400px;
+  margin: 15px 0 15px auto;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+.side-box {
+  background: linear-gradient(to bottom, #0059b3, #003366);
+  color: #fff;
+  padding: 6px;
+  text-align: center;
+  width: 90px;
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.side-box h3 {
+  font-size: 11px;
+  margin: 0 0 4px 0;
+  color: #ffcccc;
+}
+
+.side-box p {
+  margin: 2px 0;
+}
+
+.side-box .small {
+  font-size: 9px;
+}
+
+.content-box {
+  flex: 1;
+  padding: 6px 10px;
+  background: #fff;
+  color: #000;
+  line-height: 1.4;
+}
+
+.content-box p {
+  margin: 4px 0;
+}
+
+.content-box .bold {
+  font-weight: bold;
+}
+
+.content-box .company {
+  color: #004080;
+  font-weight: bold;
+}
+
+hr {
+  border: none;
+  border-top: 1px dashed #aaa;
+  margin: 5px 0;
+}
+
+.VEHICLE-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.VEHICLE-table thead th {
+  background-color: #00a0e3;
+  color: #fff;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.VEHICLE-table tbody td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.VEHICLE-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.VEHICLE-table tbody tr:hover {
+  background-color: #e6f7ff;
+}
+
+/* الأعمدة العربية على اليمين */
+.VEHICLE-table thead th:nth-child(n + 6),
+.VEHICLE-table tbody td:nth-child(n + 6) {
+  background-color: #f3faff;
+  font-weight: bold;
+  direction: rtl;
+}
+
+.trip-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 900px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  border: 2px solid #000;
+}
+
+.trip-table th,
+.trip-table td {
+  border: 2px solid #000;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+/* الهيدر */
+.trip-table thead th {
+  background: #00a0e3;
+  color: #e4f6f8;
+  font-weight: bold;
+}
+
+/* صف البيانات */
+.data-row td {
+  position: relative;
+}
+
+.passenger-table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 900px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  border: 2px solid #000;
+}
+
+.passenger-table th,
+.passenger-table td {
+  border: 1px solid #000;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.passenger-table thead tr:first-child th {
+  background: #fafa04;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.passenger-table thead tr:nth-child(2) th {
+  background: #e4f6f8;
+  color: #000;
+  font-weight: bold;
+}
+
+.passenger-table tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.passenger-table tbody tr:hover {
+  background: #dff0ff;
+}
+
+.passenger-table td:first-child {
+  font-weight: bold;
+  color: #333;
+  background: #f1f1f1;
+  width: 60px;
+}
+
+.header-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 250px;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  /* جدول الرحلة الرئيسي */
+  .trip-table {
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: auto;
+    overflow-x: visible;
+    box-sizing: border-box;
+  }
+
+  /* فقط الجداول الكبيرة الأخرى يسمح لها بالـ scroll */
+  .passenger-table,
+  .car-trips,
+  .VEHICLE-table,
+  .my-table.first-party {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    box-sizing: border-box;
+  }
+
+  /* th و td */
+  .trip-table th,
+  .trip-table td,
+  .passenger-table th,
+  .passenger-table td,
+  .car-trips th,
+  .car-trips td,
+  .VEHICLE-table th,
+  .VEHICLE-table td,
+  .my-table.first-party th,
+  .my-table.first-party td {
+    padding: 6px 8px;
+    font-size: 12px;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* الصورة الهيدرية */
+  .header-image img {
+    max-height: 150px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  /* مربعات Start / Finish */
+  .car-trips th span {
+    font-size: 10px;
+    padding: 2px 4px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+
+  /* محتوى driver-notice-box */
+  .driver-notice-box {
+    width: 100%;
+    margin: 10px 0;
+    font-size: 10px;
+  }
+
+  /* wrapper-box يتحول لعمودي */
+  .wrapper-box {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wrapper-box .image-box {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  .wrapper-box .car-trips {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* النصوص الكبيرة مثل main-title و sub-title */
+  .main-title,
+  .sub-title {
+    font-size: 16px;
+    top: 0;
+  }
+}
+
