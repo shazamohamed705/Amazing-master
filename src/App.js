@@ -11,6 +11,7 @@ import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Report from './Components/Report/Report';
 import ReportResult from './Components/ReportResult/ReportResult'
+import TransportOrder from './Components/TransportOrder/TransportOrder';
 import Appointment from './Components/Appointment1/Appointment'; // ← ضيفي الاستيراد الجديد
 
 let routes = createBrowserRouter([
@@ -28,6 +29,7 @@ let routes = createBrowserRouter([
       { path: 'register', element: <Register /> },
       { path: 'login', element: <Login /> },
             { path: 'appointment', element: <Appointment /> }, // ← هنا مسار صفحة الحجز
+      { path: 'transport-order', element: <TransportOrder /> },
 
     ]
   }
