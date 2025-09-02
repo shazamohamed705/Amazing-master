@@ -10,6 +10,7 @@ import Info from './Components/Info/Info';
 import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Report from './Components/Report/Report';
+import TransportContract from './Components/Report/TransportContract';
 import ReportResult from './Components/ReportResult/ReportResult'
 import Appointment from './Components/Appointment1/Appointment'; // ← ضيفي الاستيراد الجديد
 
@@ -24,6 +25,7 @@ let routes = createBrowserRouter([
       { path: 'articles', element: <Articles /> },
       { path: 'report', element: <Report /> },
       { path: 'report-result', element: <ReportResult /> }, // ← ضيفي هذا السطر
+      { path: 'contract/:id', element: <TransportContract /> },
       { path: 'info', element: <Info /> },
       { path: 'register', element: <Register /> },
       { path: 'login', element: <Login /> },
