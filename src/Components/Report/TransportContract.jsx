@@ -160,6 +160,37 @@ const TransportContract = () => {
               </p>
             </div>
 
+            {/* جدول مسار الرحلة والتاريخ - مطابق للتقسيم المطلوب */}
+            <table className="flight-path-table" style={{ width: "100%", borderCollapse: "collapse" }}>
+              <colgroup>
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "75%" }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th className="fp-head fp-date">DATE#<div className="fp-sub">تاريخ الرحلة</div></th>
+                  <th className="fp-head fp-path">FLIGHT PATH#<div className="fp-sub">مسار الرحلة</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="fp-date-cell">
+                    {trip?.departure_time && new Date(trip.departure_time).toLocaleDateString("ar-EG")}
+                  </td>
+                  <td className="fp-path-cell">
+                    <div className="fp-path-wrapper">
+                      <span className="fp-start-badge">Start</span>
+                      <span className="fp-start-city">{trip?.departure_location}</span>
+                      <span className="fp-arrow" aria-hidden> </span>
+                      <span className="fp-to">TO/ إلى</span>
+                      <span className="fp-finish-city">{trip?.destination_location}</span>
+                      <span className="fp-finish-badge">Finish</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
             {/* بيانات السيارة */}
             <table className="car-trips" style={{ borderCollapse: "collapse", width: "100%" }}>
               <colgroup>
