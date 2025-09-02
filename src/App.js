@@ -11,6 +11,7 @@ import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Report from './Components/Report/Report';
 import ReportResult from './Components/ReportResult/ReportResult'
+import TransportContract from './Components/TransportContract/TransportContract';
 import Appointment from './Components/Appointment1/Appointment'; // ← ضيفي الاستيراد الجديد
 
 let routes = createBrowserRouter([
@@ -27,6 +28,7 @@ let routes = createBrowserRouter([
       { path: 'info', element: <Info /> },
       { path: 'register', element: <Register /> },
       { path: 'login', element: <Login /> },
+      { path: 'contract/:id', element: <TransportContract /> },
             { path: 'appointment', element: <Appointment /> }, // ← هنا مسار صفحة الحجز
 
     ]
