@@ -283,6 +283,7 @@ hr {
   margin: 8px 10px;
   background: linear-gradient(90deg, #2dbd6e 0%, #2dbd6e 85%, #1a8f51 85%);
   border-radius: 6px;
+  pointer-events: none; /* لا تمنع تحديد النص في الصف */
 }
 
 .path-arrow-wrap::after {
@@ -296,6 +297,7 @@ hr {
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   border-left: 16px solid #1a8f51;
+  pointer-events: none;
 }
 
 .label-start {
@@ -309,6 +311,8 @@ hr {
   border-radius: 6px;
   font-size: 11px;
   border: 1px solid #0f6a3a;
+  pointer-events: auto; /* تسمح بالتحديد */
+  -webkit-user-select: text; user-select: text;
 }
 
 .label-finish {
@@ -322,6 +326,8 @@ hr {
   border-radius: 6px;
   font-size: 11px;
   border: 1px solid #9f2f2b;
+  pointer-events: auto; /* تسمح بالتحديد */
+  -webkit-user-select: text; user-select: text;
 }
 
 .date-cell {
