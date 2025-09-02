@@ -1,4 +1,6 @@
 import React, { useState,useEffect} from "react";
+import { useSearchParams } from "react-router-dom";
+import { apiClient } from "../../services/apiClient";
 import { Disclosure, Label } from "@headlessui/react";
 import GaugeChart from "react-gauge-chart";
 import { FaCarSide, FaCogs,FaUser, FaSnowflake, FaShieldAlt, FaBook, FaRuler, FaPlug, FaExclamationTriangle, FaCamera,FaChevronDown,FaInfoCircle,FaCheckCircle,FaCarBattery,FaOilCan} from "react-icons/fa";
@@ -37,6 +39,9 @@ const getStatusColor = (status) => {
 };
 export default function ReportResult() {
     const [score, setScore] = useState(30); // النسبة المئوية
+    const [searchParams] = useSearchParams();
+    const vin = searchParams.get('vin');
+    const reportId = searchParams.get('report');
 
 const [showInfo, setShowInfo] = useState(false);
   const [showReasons, setShowReasons] = useState(false);
@@ -323,15 +328,29 @@ useEffect(() => {
   const handleClickOutside = () => {
     setOpenInfoIndex(null);
   };
-
-  // نضيف Listener على كل النقرات
   document.addEventListener("click", handleClickOutside);
-
-  // نظف الـ Listener لما الكمبوننت يتفكك
   return () => {
     document.removeEventListener("click", handleClickOutside);
   };
 }, []);
+
+useEffect(() => {
+  let ignore = false;
+  async function fetchReport() {
+    if (!vin && !reportId) return;
+    try {
+      const data = await apiClient.get("/reports", { query: { vin, reportId } });
+      if (!ignore) {
+        if (typeof data.score === 'number') setScore(data.score);
+        // يمكن ربط بقية الحقول لاحقاً حسب استجابة ال API
+      }
+    } catch (_) {
+      // تجاهل الأخطاء حالياً
+    }
+  }
+  fetchReport();
+  return () => { ignore = true; };
+}, [vin, reportId]);
 
 const [openGallery, setOpenGallery] = useState(false);
 

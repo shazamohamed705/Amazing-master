@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import { apiClient } from "../../services/apiClient";
+import { useAuth } from "../context/AuthContext";
 import { 
   FaUser, FaPhoneAlt, FaCar, FaCalendarAlt, 
   FaFileUpload, FaMapMarkerAlt, FaClipboardList 
 } from "react-icons/fa";
 
 const Appointment = () => {
+  const { token } = useAuth();
   const [carImages, setCarImages] = useState([null, null, null]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleImageChange = (index, file) => {
     const newImages = [...carImages];
@@ -29,6 +34,36 @@ const Appointment = () => {
     Security: ["All wheel drive دفع الرباعي","High-beam assistant تشغيل الضوء العالي","Night view assist رؤية ليلية","Tire pressure monitoring حساسات ضغط الإطارات"]
   };
 
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setSubmitError("");
+
+    const formEl = e.currentTarget;
+    const formData = new FormData(formEl);
+    // Attach images
+    carImages.forEach((url, index) => {
+      const input = formEl.querySelectorAll('input[type="file"]')[index];
+      if (input && input.files && input.files[0]) {
+        formData.append(`image_${index + 1}`, input.files[0]);
+      }
+    });
+    // Attach selected features
+    formData.append("features", JSON.stringify(selectedFeatures));
+
+    try {
+      await apiClient.post("/appointments", formData, { token, isFormData: true });
+      formEl.reset();
+      setSelectedFeatures([]);
+      setCarImages([null, null, null]);
+      alert("تم إرسال الحجز بنجاح");
+    } catch (err) {
+      setSubmitError(err?.message || "فشل إرسال الحجز");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section className="min-h-screen bg-gray-50 dark:bg-gray-900 py-16 px-6 transition-colors duration-500">
       <div className="max-w-6xl mx-auto">
@@ -36,24 +71,24 @@ const Appointment = () => {
           احجز موعد الفحص
         </h1>
 
-        <form className="grid md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl shadow-lg transition-colors duration-500">
+        <form onSubmit={onSubmit} className="grid md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-800 p-8 rounded-2xl shadow-lg transition-colors duration-500">
 
           {/* الاسم */}
           <div className="flex items-center border rounded-xl p-3 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
             <FaUser className="text-red-500 mr-3" />
-            <input type="text" placeholder="الاسم الكامل" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-white text-sm" required />
+            <input name="fullName" type="text" placeholder="الاسم الكامل" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-white text-sm" required />
           </div>
 
           {/* رقم الهاتف */}
           <div className="flex items-center border rounded-xl p-3 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
             <FaPhoneAlt className="text-red-500 mr-3" />
-            <input type="tel" placeholder="رقم الهاتف" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-white text-sm" required />
+            <input name="phone" type="tel" placeholder="رقم الهاتف" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-white text-sm" required />
           </div>
 
           {/* موديل السيارة */}
           <div className="flex items-center border rounded-xl px-3 py-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 relative">
             <FaCar className="text-red-500 mr-3" />
-            <select className="w-full focus:outline-none text-gray-800 dark:text-gray-200 appearance-none px-3 py-2 rounded-xl cursor-pointer text-sm dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800"
+            <select name="carModel" className="w-full focus:outline-none text-gray-800 dark:text-gray-200 appearance-none px-3 py-2 rounded-xl cursor-pointer text-sm dark:bg-gray-900 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 dark:scrollbar-thumb-gray-600 dark:scrollbar-track-gray-800"
               required defaultValue="">
               <option value="" disabled>اختر موديل السيارة</option>
               {["تويوتا","نيسان","هوندا","هيونداي","كيا","بي إم دبليو","مرسيدس","فولكس فاجن","فورد","جيب","شيفروليه","رينو","ميتسوبيشي","سوزوكي","مازدا","لكزس","بورش","أودي"]
@@ -65,7 +100,7 @@ const Appointment = () => {
           {/* سنة الصنع */}
           <div className="flex items-center border rounded-xl px-3 py-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 mt-3 relative">
             <FaCalendarAlt className="text-red-500 mr-3" />
-            <select className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
+            <select name="year" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
               required defaultValue="">
               <option value="" disabled className="text-gray-500 dark:text-gray-400">اختر سنة الصنع</option>
               {Array.from({ length: 30 }, (_, i) => new Date().getFullYear() - i).map(year => (
@@ -78,7 +113,7 @@ const Appointment = () => {
           {/* نوع الفحص */}
           <div className="flex items-center border rounded-xl p-3 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 col-span-2 relative">
             <FaClipboardList className="text-red-500 mr-3" />
-            <select className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
+            <select name="inspectionType" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
               required defaultValue="">
               <option value="" disabled className="text-gray-500 dark:text-gray-400">اختر نوع الفحص</option>
               <option value="شامل" className="text-gray-800 dark:text-gray-200">فحص شامل</option>
@@ -92,7 +127,7 @@ const Appointment = () => {
           
           <div className="flex items-center border rounded-xl px-3 py-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 mt-3 relative">
             <FaCar className="text-red-500 mr-3" />
-            <select className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
+            <select name="engineType" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1 appearance-none cursor-pointer dark:bg-gray-900"
               required defaultValue="">
               <option value="" disabled className="text-gray-500 dark:text-gray-400">اختر نوع المحرك</option>
               <option value="بنزين" className="text-gray-800 dark:text-gray-200">بنزين</option>
@@ -106,13 +141,14 @@ const Appointment = () => {
           {/* المسافة المقطوعة */}
           <div className="flex items-center border rounded-xl px-3 py-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 mt-3">
             <FaCar className="text-red-500 mr-3" />
-            <input type="number" placeholder="المسافة المقطوعة (كم)" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1" required />
+            <input name="mileage" type="number" placeholder="المسافة المقطوعة (كم)" className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl px-2 py-1" required />
           </div>
 
           {/* الفرع */}
           <div className="flex items-center border rounded-xl px-3 py-2 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 col-span-2 relative">
   <FaMapMarkerAlt className="text-red-500 mr-3" />
   <select
+    name="branch"
     className="w-full bg-transparent focus:outline-none text-gray-800 dark:text-gray-200 text-sm rounded-xl pl-6 py-1 appearance-none cursor-pointer dark:bg-gray-900"
     required
     defaultValue=""
@@ -156,9 +192,10 @@ const Appointment = () => {
           </div>
 
           {/* زر الإرسال */}
-          <div className="col-span-2 flex justify-center mt-6">
-            <button type="submit" className="px-12 py-4 rounded-full text-white font-semibold shadow-lg transition duration-300 transform bg-red-600 hover:bg-red-700 hover:scale-105 hover:shadow-2xl">
-              تأكيد الحجز
+          <div className="col-span-2 flex flex-col items-center mt-6">
+            {submitError && <div className="text-red-500 text-sm mb-2">{submitError}</div>}
+            <button type="submit" disabled={submitting} className="px-12 py-4 rounded-full text-white font-semibold shadow-lg transition duration-300 transform bg-red-600 hover:bg-red-700 hover:scale-105 hover:shadow-2xl disabled:opacity-50">
+              {submitting ? 'جارٍ الإرسال...' : 'تأكيد الحجز'}
             </button>
           </div>
         </form>

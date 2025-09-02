@@ -6,11 +6,14 @@ import reportWebVitals from './reportWebVitals';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { DarkModeProvider } from './Components/context/DarkModeContext';
+import { AuthProvider } from './Components/context/AuthContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <DarkModeProvider>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
     </DarkModeProvider>
   </React.StrictMode>
 );
