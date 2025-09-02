@@ -272,6 +272,69 @@ hr {
   position: relative;
 }
 
+/* مسار السهم الأخضر */
+.path-arrow-cell {
+  background: #eaf7ec;
+}
+
+.path-arrow-wrap {
+  position: relative;
+  height: 32px;
+  margin: 8px 10px;
+  background: linear-gradient(90deg, #2dbd6e 0%, #2dbd6e 85%, #1a8f51 85%);
+  border-radius: 6px;
+  pointer-events: none; /* لا تمنع تحديد النص في الصف */
+}
+
+.path-arrow-wrap::after {
+  content: "";
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 16px solid #1a8f51;
+  pointer-events: none;
+}
+
+.label-start {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1f9c58;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  border: 1px solid #0f6a3a;
+  pointer-events: auto; /* تسمح بالتحديد */
+  -webkit-user-select: text; user-select: text;
+}
+
+.label-finish {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #d9534f;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  border: 1px solid #9f2f2b;
+  pointer-events: auto; /* تسمح بالتحديد */
+  -webkit-user-select: text; user-select: text;
+}
+
+.date-cell {
+  font-size: 22px;
+  color: #c91414;
+}
+
 .passenger-table {
   border-collapse: collapse;
   width: 100%;
