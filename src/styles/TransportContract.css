@@ -411,3 +411,23 @@ hr {
   }
 }
 
+/* تحسين عرض جدول الفليت على الشاشات الصغيرة ومنع المسافات الزائدة */
+@media (max-width: 600px) {
+  .VEHICLE-table {
+    display: table; /* إلغاء display:block من قواعد أوسع */
+    width: 100%;
+    table-layout: fixed; /* توزيع أعمدة ثابت لمنع التمدد الأفقي */
+    margin: 12px 0; /* تقليل الهوامش لتقليل المساحة الزائدة */
+    font-size: 12px;
+    overflow-x: visible;
+  }
+
+  .VEHICLE-table th,
+  .VEHICLE-table td {
+    padding: 6px 8px; /* تقليل الحواشي الداخلية لتقليل المساحة */
+    white-space: normal; /* السماح بلف النص */
+    word-break: break-word;
+    overflow-wrap: anywhere; /* كسر الكلمات الطويلة */
+  }
+}
+
