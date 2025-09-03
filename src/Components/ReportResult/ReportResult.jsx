@@ -1,4 +1,5 @@
 import React, { useState,useEffect} from "react";
+import axios from "axios";
 import { Disclosure, Label } from "@headlessui/react";
 import GaugeChart from "react-gauge-chart";
 import { FaCarSide, FaCogs,FaUser, FaSnowflake, FaShieldAlt, FaBook, FaRuler, FaPlug, FaExclamationTriangle, FaCamera,FaChevronDown,FaInfoCircle,FaCheckCircle,FaCarBattery,FaOilCan} from "react-icons/fa";
@@ -37,6 +38,7 @@ const getStatusColor = (status) => {
 };
 export default function ReportResult() {
     const [score, setScore] = useState(30); // النسبة المئوية
+    const [apiReport, setApiReport] = useState(null);
 
 const [showInfo, setShowInfo] = useState(false);
   const [showReasons, setShowReasons] = useState(false);
@@ -55,33 +57,100 @@ const grades = [
     (g) => score >= g.range[0] && score <= g.range[1]
   ); 
 
- const reportData = {
-  sections: [
-    {
-      title: "بيانات الفحص",
-      type: "details",
-      carInfo: {
-        image: "/car1.png",
-        chassisNumber: "1111111111AAAAAA",
-        brand: "تويوتا",
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
+    axios
+      .get(
+        "https://demo.syarahplus.sa/backend/api/users/inspection/reports",
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((res) => {
+        const payload = res?.data?.data;
+        if (!payload) return;
+        setApiReport(payload);
+        const nextScore =
+          typeof payload?.percentage === "number"
+            ? payload.percentage
+            : typeof payload?.data?.percentage_score === "number"
+            ? payload.data.percentage_score
+            : 0;
+        setScore(Number(nextScore) || 0);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const normalizedInspectionDetails = (() => {
+    const points = apiReport?.data?.inspection_reports_points || [];
+    return points.map((pointItem, index) => {
+      const labelCandidate =
+        pointItem?.point?.name ||
+        pointItem?.point?.title ||
+        pointItem?.point?.label ||
+        `نقطة #${index + 1}`;
+      const scorePart =
+        pointItem?.score_achieved != null && pointItem?.max_score != null
+          ? ` (${Number(pointItem.score_achieved)} / ${Number(
+              pointItem.max_score
+            )})`
+          : "";
+      const passPart =
+        typeof pointItem?.point_passed === "boolean"
+          ? pointItem.point_passed
+            ? " ✔️"
+            : " ❌"
+          : "";
+      const value = `${pointItem?.point_condition ?? "-"}${scorePart}${passPart}`;
+      return { label: labelCandidate, value };
+    });
+  })();
+
+  const inspectionStatus = (() => {
+    const status = apiReport?.data?.status;
+    // اعتبر الحالة pending كـ فشل حتى اكتمال التقرير
+    if (status === "pending" || status === null || status === undefined)
+      return "fail";
+    if (status === "success" || status === "completed" || status === "done")
+      return "success";
+    return status || "fail";
+  })();
+
+  const reportData = {
+    sections: [
+      {
+        title: "بيانات الفحص",
+        type: "details",
+        carInfo: {
+          image: "/car1.png",
+          chassisNumber:
+            apiReport?.data?.vehicle?.vin_number || "1111111111AAAAAA",
+          brand:
+            apiReport?.data?.vehicle?.manufacturer?.name ||
+            apiReport?.data?.vehicle?.manufacturer_id ||
+            "تويوتا",
+          model:
+            apiReport?.data?.vehicle?.model ||
+            apiReport?.data?.vehicle?.model_name ||
+            undefined,
+          title: undefined,
+          reportNumber: apiReport?.data?.report_number,
+        },
+        inspection: {
+          reportImage:
+            apiReport?.data?.pdf_report_path ||
+            "https://via.placeholder.com/300x150",
+          status: inspectionStatus,
+          result: "السيارة بحالة جيدة جداً",
+          details: normalizedInspectionDetails,
+          reasons: Array.isArray(apiReport?.failure_reasons)
+            ? apiReport.failure_reasons
+            : [],
+        },
       },
-      inspection: {
-        reportImage: "https://via.placeholder.com/300x150",
-        status: "fail",
-        result: "السيارة بحالة جيدة جداً",
-        details: [],
-         reasons: [
-          "تايتل السيارة ❌",
-          "المسافة المقطوعة ❌",
-          "تاريخ الرعاية بالمركبة ❌",
-        ],
-       
-      },
-    },
-   
-   
-  ],
-};
+    ],
+  };
 
  const historyData = {
   itemes: [
