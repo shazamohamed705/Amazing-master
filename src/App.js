@@ -11,24 +11,22 @@ import Register from './Components/Register/Register';
 import Login from './Components/Login/Login';
 import Report from './Components/Report/Report';
 import ReportResult from './Components/ReportResult/ReportResult'
-import Appointment from './Components/Appointment1/Appointment'; // ← ضيفي الاستيراد الجديد
+import Appointment from './Components/Appointment1/Appointment'; 
 
 let routes = createBrowserRouter([
   {
     path: '/', element: <Layout />, children: [
       { index: true, element: <Home /> },
-      { path: '/', element: <Home /> },
       { path: 'about', element: <About /> },
       { path: 'gallery', element: <Gallery /> },
-      { path: 'Questions', element: <Questions /> },
+      { path: 'questions', element: <Questions /> },
       { path: 'articles', element: <Articles /> },
       { path: 'report', element: <Report /> },
-      { path: 'report-result', element: <ReportResult /> }, // ← ضيفي هذا السطر
+      { path: 'report-result', element: <ReportResult /> },
       { path: 'info', element: <Info /> },
       { path: 'register', element: <Register /> },
       { path: 'login', element: <Login /> },
-            { path: 'appointment', element: <Appointment /> }, // ← هنا مسار صفحة الحجز
-
+      { path: 'appointment', element: <Appointment /> },
     ]
   }
 ]);

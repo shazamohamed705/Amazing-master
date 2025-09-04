@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { Link } from "react-router-dom";
 import { Router } from 'react-router-dom'
 import { FaCalendarAlt, FaWhatsapp, FaPhoneAlt } from "react-icons/fa";
-
-import Appointment  from "../Appointment1/Appointment"
+import { useNavigate } from 'react-router-dom';
 import numPhoto from '../../assets/Group (2).png'
 import numPhoto1 from '../../assets/group (2) 7.png'
 import numPhoto2 from '../../assets/group (2) 9.png'
@@ -45,35 +44,40 @@ function Home() {
     slidesToScroll: 1,
 
   };
+    const navigate = useNavigate(); // ⚡ مهم: هنا بتعرف المتغير
+
 
   return (
     <>
 
       {/* home */}
-
-   <section className="home flex justify-start py-3 md:py-10 px-6">
-  <div className="text-left">
-    <h1 className="min-h-36 text-3xl md:text-4xl font-extrabold dark:text-white">
-      <span className="text-red-600">اول</span> <span className="mb-2">نطام فحص </span>
-
-      <span className="block">مركبات شامل عالمي</span>
+{/* سكشن Home */}
+<section className="home flex flex-col md:flex-row justify-between items-start pt-4 md:pt-8 px-6 bg-gray-50 dark:bg-gray-900 relative">
+  {/* الكلام والزر */}
+  <div className="text-center max-w-xl z-10">
+    <h1 className="text-3xl md:text-3xl font-extrabold dark:text-white leading-snug">
+      <span className="text-red-600">أول</span> نظام فحص
+      <span className="block mt-2">مركبات شامل عالمي</span>
     </h1>
 
-  <Link
-  to="/appointment"
-  className="flex justify-center items-center mt-4 px-12 py-4 rounded-full text-white font-semibold shadow-lg transition duration-300 transform 
-             bg-red-600 border border-black dark:border-white
-             hover:bg-red-700 hover:scale-105 hover:shadow-2xl w-64 text-lg"
->
-<Link to="/appointment">احجز الآن</Link>
-
-</Link>
-
-
-
+    <button
+      onClick={() => navigate('/appointment')}
+      className="mt-8 px-12 py-4 rounded-full text-white font-semibold shadow-lg transition duration-300 transform 
+                 bg-red-600 border border-black dark:border-white
+                 hover:bg-red-700 hover:scale-105 hover:shadow-2xl text-lg"
+    >
+      احجز الآن
+    </button>
   </div>
+
+ <div className="absolute bottom-0 left-20 w-1/3 md:w-1/4">
+  <img src="./sc2.png" alt="car" className="w-full h-auto" />
+</div>
 </section>
-{/* بداية السيكشن الأسود */}
+
+
+<div className="h-16 md:h-24"></div>
+
 <section className="w-full py-16 bg-black dark:bg-gray-900">
   <div className="container mx-auto px-6">
     <h2 className="text-3xl font-bold text-center text-white mb-12">
@@ -81,58 +85,57 @@ function Home() {
     </h2>
 
     <div className="grid md:grid-cols-3 gap-8">
+
       {/* الكارت الأول */}
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col items-center text-center">
-        <div className="bg-black dark:bg-gray-700 text-white w-16 h-16 flex items-center justify-center rounded-full mb-4">
+      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-row items-center text-right gap-4">
+        <div className="bg-black dark:bg-gray-700 text-white w-16 h-16 flex items-center justify-center rounded-full">
           <FaCalendarAlt size={28} />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white">تريد فحص سيارتك؟</h3>
-        <p className="text-gray-600 dark:text-gray-300">احجز الآن</p>
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">تريد فحص سيارتك؟</h3>
+          <p className="text-gray-600 dark:text-gray-300">احجز الآن</p>
+        </div>
       </div>
 
-     {/* الكارت الثاني */}
-<a 
-  href="https://wa.me/" 
-  target="_blank" 
-  rel="noopener noreferrer"
-  className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-xl transition duration-300"
->
-  <div className="bg-green-500 text-white w-16 h-16 flex items-center justify-center rounded-full mb-4">
-    <FaWhatsapp size={28} />
-  </div>
-  <h3 className="text-lg font-bold text-gray-900 dark:text-white">راسلنا على واتساب</h3>
-  <p className="text-gray-600 dark:text-gray-300"></p>
-</a>
-
+      {/* الكارت الثاني */}
+      <a 
+        href="https://wa.me/" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-row items-center text-right gap-4 hover:shadow-xl transition duration-300"
+      >
+        <div className="bg-green-500 text-white w-16 h-16 flex items-center justify-center rounded-full">
+          <FaWhatsapp size={28} />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">راسلنا على واتساب</h3>
+        </div>
+      </a>
 
       {/* الكارت الثالث */}
-      <div className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col items-center text-center">
-        
-        <a 
-  href="tel:+96265802228" 
-  className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-col items-center text-center hover:shadow-xl transition duration-300"
->
-  <div className="bg-red-500 text-white w-16 h-16 flex items-center justify-center rounded-full mb-4">
-    <FaPhoneAlt size={28} />
-  </div>
-  <h3 className="text-lg font-bold text-gray-900 dark:text-white">اتصل بنا</h3>
-  <p className="text-gray-600 dark:text-gray-300"> </p>
-</a>
-      </div>
+      <a 
+        href="tel:+96265802228" 
+        className="bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-6 flex flex-row items-center text-right gap-4 hover:shadow-xl transition duration-300"
+      >
+        <div className="bg-red-500 text-white w-16 h-16 flex items-center justify-center rounded-full">
+          <FaPhoneAlt size={28} />
+        </div>
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">اتصل بنا</h3>
+        </div>
+      </a>
+
     </div>
   </div>
 </section>
-{/* نهاية السيكشن الأسود */}
+
 
 {/* كار سيرفيس */}
 <section className="flex justify-center py-10 px-6 bg-gray-50 dark:bg-gray-900">
   <div className="max-w-4xl w-full flex flex-col items-center text-center">
     <h3 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white mb-4">
-      كار سيرفيس
+   
     </h3>
-    <p className="text-gray-700 dark:text-gray-300">
-      هنا تقدر تضيف وصف قصير عن الشركة أو الخدمات اللي بتقدمها ✨
-    </p>
  
 
 
