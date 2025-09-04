@@ -387,21 +387,21 @@ function Home() {
         <Slider {...settings2}>
           <div className=" w-4/5 text-end m-auto py-7 px-10 text-[#A4A4A4] border mainBorder rounded-3xl ">
             <p className='text-lg md:text-3xl font-semibold md:leading-relaxed '>ما شاء الله تبارك الله، خدمة الفحص عندكم أكثر من رائعة. السيارة تم فحصها بشكل دقيق جداً وكل صغيرة وكبيرة تم شرحها لي بالتفصيل. الصراحة ارتحت مرة بعد التقرير اللي استلمته، وحسيت إني فاهم حالة السيارة بالكامل قبل ما أشتريها. الله يبارك فيكم ويزيدكم من فضله</p>
-            <div className=" flex items-center justify-end gap-4 mt-8 text-end">
+            <div className=" flex items-center justify-end gap-4 mt-15 text-end">
               <img src={say2} alt="profile image" />
               <h2 className='text-base font-bold'>مصطفي الحسيني</h2>
             </div>
           </div>
           <div className=" w-4/5 text-end m-auto py-7 px-10 text-[#A4A4A4] border mainBorder rounded-3xl ">
             <p className='text-lg md:text-3xl font-semibold md:leading-relaxed '>ما شاء الله تبارك الله، خدمة الفحص عندكم أكثر من رائعة. السيارة تم فحصها بشكل دقيق جداً وكل صغيرة وكبيرة تم شرحها لي بالتفصيل. الصراحة ارتحت مرة بعد التقرير اللي استلمته، وحسيت إني فاهم حالة السيارة بالكامل قبل ما أشتريها. الله يبارك فيكم ويزيدكم من فضله</p>
-            <div className=" flex items-center justify-end gap-4 mt-8 text-end">
+            <div className=" flex items-center justify-end gap-4 mt-15 text-end">
               <img src={say2} alt="profile image" />
               <h2 className='text-base font-bold'>مصطفي الحسيني</h2>
             </div>
           </div>
           <div className=" w-4/5 text-end m-auto py-7 px-10 text-[#A4A4A4] border mainBorder rounded-3xl ">
             <p className='text-lg md:text-3xl font-semibold md:leading-relaxed '>ما شاء الله تبارك الله، خدمة الفحص عندكم أكثر من رائعة. السيارة تم فحصها بشكل دقيق جداً وكل صغيرة وكبيرة تم شرحها لي بالتفصيل. الصراحة ارتحت مرة بعد التقرير اللي استلمته، وحسيت إني فاهم حالة السيارة بالكامل قبل ما أشتريها. الله يبارك فيكم ويزيدكم من فضله</p>
-            <div className=" flex items-center justify-end gap-4 mt-8 text-end">
+            <div className=" flex items-center justify-end gap-4 mt-15 text-end">
               <img src={say2} alt="profile image" />
               <h2 className='text-base font-bold'>مصطفي الحسيني</h2>
             </div>

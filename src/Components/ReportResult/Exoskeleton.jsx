@@ -1,196 +1,88 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Disclosure } from "@headlessui/react";
 import { FaChevronDown, FaInfoCircle } from "react-icons/fa";
 import FullScreenGallery from "../FullScreenGallery/FullScreenGallery";
 import hallbackImage from "../../assets/immage3.png";
 
 function Exoskeleton() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const navigationData = location.state;
+
   const [Filter, setFilter] = useState("specifics");
   const [openInfoIndex, setOpenInfoIndex] = useState(null);
   const [openGallery, setOpenGallery] = useState(null);
+  const [exoskeletonData, setExoskeletonData] = useState(null);
 
-  useEffect(() => {
-    const handleClickOutside = () => {
-      setOpenInfoIndex(null);
-    };
+  const storedToken = localStorage.getItem("token");
 
-    document.addEventListener("click", handleClickOutside);
+useEffect(() => {
+  if (!navigationData?.report && !navigationData?.searchResults) {
+    console.error("لا توجد بيانات للتقرير، يرجى البحث أولاً.");
+    navigate("/report-search");
+    return;
+  }
 
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
+  const navData = navigationData.searchResults || navigationData.report;
+  let targetReport = Array.isArray(navData) ? navData[0] : navData;
 
-  const exoskeleton = {
-    itemis: [
-      {
-        title: " الهيكل الخارجي ",
-        type: "details",
-        carInformation: { image: hallbackImage },
-        descriptionPoints1: [
-          "يقدّم كارسيرفس تقييم وفحص شامل ودقيق لهيكل السيارة الخارجي للتأكد من سلامته و مطابقته لمعايير كار سيرفيس.",
-          "يتم إجراء الفحص باستخدام عدة طرق، مثل.",
-          "الفحص النظري المتخصص",
-          "قياس سماكة الدهان والمعجون باستخدام الأجهزة الخاصة",
-          "الذكاء الصناعي",
-          "سجلات تاريخ السيارة والإصلاحات السابقة",
-          "يغطي هذا القسم النقاط التالية:",
-          "أجزاء السيارة الخارجية",
-          "حالة المقصورة الداخلية",
-          "الزجاج الأمامي والخلفي",
-          "السقف",
-          "الشبابيك",
-          "الشبر",
-        ],
+  if (navigationData.reportNum && Array.isArray(navData)) {
+    const foundReport = navData.find(
+      (r) => r.report_number === navigationData.reportNum
+    );
+    if (foundReport) targetReport = foundReport;
+  }
 
-        control: {
-          specifics: [
-            {
-              label: "صدام امامي",
-              Stats: "⚠️",
-              info: "تمت ملاحظة خدوش بسيطة في الصدام الأمامي.",
-              gallery: [
-                {
-                  src: "/img4.png",
-                  diagram: "/iamg10.png",
-                  title: "صدام امامي",
-                  subtitle: "خدوش بسيطة",
-                },
-                {
-                  src: "/img6.png",
-                  diagram: "/iamg9.png",
-                  title: "صدام امامي",
-                  subtitle: "تفاصيل إضافية",
-                },
-                {
-                  src: "/img1.png",
-                  diagram: "/iiamge8.png",
-                  title: "صدام امامي",
-                  subtitle: "زاوية مختلفة",
-                },
-              ],
-            },
-            {
-              label: "جناح امامي يمين",
-              Stats: "✔️",
-              info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات.",
-            },
-            { label: "كشاف شمال", Stats: "⚠️", info: "الكشاف الشمال يحتاج تغيير." },
-            { label: "باب خلفي يمين", Stats: "✔️" },
-            { label: "باب خلفي شمال", Stats: "✔️" },
-            { label: "الكبوت", Stats: "⚠️" },
-            { label: "الشنطة", Stats: "✔️" },
-            { label: "السقف", Stats: "✔️" },
-            { label: "الزجاج الأمامي", Stats: "⚠️" },
-            { label: "الزجاج الخلفي", Stats: "✔️" },
-          ],
+  if (targetReport) {
+    const mapPoints = (points) =>
+      (points || []).map((p) => ({
+        label: p.name_ar,
+        Stats: p.score === 1 ? "✔️" : p.score === 2 ? "⚠️" : "❌",
+        info: p.infoexplanation_ar,
+        gallery: p.point_images
+          ? JSON.parse(p.point_images).map((img) => ({
+              src: `https://demo.syarahplus.sa/backend/${img}`,
+              title: p.name_ar,
+              subtitle: p.infoexplanation_ar,
+            }))
+          : [],
+      }));
 
-          carImage: hallbackImage,
-
-          continue: [
-            {
-              label: "صدام امامي",
-              Stats: "⚠️",
-              info: "تمت ملاحظة خدوش بسيطة في الصدام الأمامي.",
-              gallery: [
-                {
-                  src: "/img4.png",
-                  diagram: "/iamg10.png",
-                  title: "صدام امامي",
-                  subtitle: "خدوش بسيطة",
-                },
-                {
-                  src: "/img6.png",
-                  diagram: "/iamg9.png",
-                  title: "صدام امامي",
-                  subtitle: "تفاصيل إضافية",
-                },
-                {
-                  src: "/img1.png",
-                  diagram: "/iiamge8.png",
-                  title: "صدام امامي",
-                  subtitle: "زاوية مختلفة",
-                },
-              ],
-            },
-            {
-              label: "جناح امامي يمين",
-              Stats: "✔️",
-              info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات.",
-            },
-            { label: "كشاف شمال", Stats: "⚠️", info: "الكشاف الشمال يحتاج تغيير." },
-            { label: "باب خلفي يمين", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "باب خلفي شمال", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "الكبوت", Stats: "⚠️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "الشنطة", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "السقف", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "الزجاج الأمامي", Stats: "⚠️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-            { label: "الزجاج الخلفي", Stats: "✔️", info: "الجناح الأمامي الأيمن بحالة جيدة بدون ملاحظات." },
-          ],
-
-          outline: [
-            {
-              label: "الزجاج الامامي",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-            {
-              label: " الزجاج الخلفي",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-            { label: ".نقرات الزجاج الامامي" },
-          ],
-
-          onabort: [
-            {
-              label: "المرآة اليمين",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-            {
-              label: " المرآة اليسار",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-          ],
-
-          allpoint: [
-            {
-              label: "شبر  الزجاج",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-            {
-              label: " شبر الابواب   ",
-              Stats: "✔️",
-              info: "وجود نقرات أو شعر بسيط في الزجاج ليس بالأمر المقلق، مالم يكن كسر كبير وواضح",
-            },
-          ],
-
-          parent: [{ label: " الأطار الأحتياطي ", Stats: "❌" }],
-
-          review: [{ label: "جاك الاطارات وأدوات", Stats: "❌" }],
-
-          sheet: [{ label: "مفتاح الربط", Stats: "❌" }],
-
-          tablet: [
-            {
-              label: "الحالة الداخلية",
-              Stats: "⚠️",
-              info:
-                "وجود بعض التشققات في الأجزاء الداخلية ليس بالأمر المقلق ، ما لم يكن كسر أو مزع مؤثر على شكل أو أداء الأجزاء الداخلية",
-            },
-          ],
-        },
+    const itemis = (targetReport.items || []).map((i) => ({
+      title: i.name_ar,
+      type: "details",
+      carInformation: { image: hallbackImage },
+      descriptionPoints1: [
+        "يقدّم كارسيرفس تقييم وفحص شامل ودقيق لهيكل السيارة الخارجي...",
+        "يتم إجراء الفحص باستخدام عدة طرق، مثل...",
+      ],
+      control: {
+        specifics: mapPoints(i.points_specifics),
+        continue: mapPoints(i.points_continue),
+        outline: mapPoints(i.points_outline),
+        onabort: mapPoints(i.points_onabort),
+        allpoint: mapPoints(i.points_allpoint),
+        parent: mapPoints(i.points_parent),
+        review: mapPoints(i.points_review),
+        sheet: mapPoints(i.points_sheet),
+        tablet: mapPoints(i.points_tablet),
+        carImage: i.car_image
+          ? `https://demo.syarahplus.sa/backend/${i.car_image}`
+          : "",
       },
-    ],
-  };
+    }));
+
+    setExoskeletonData({ itemis });
+  }
+}, [navigationData, navigate]);
+
+if (!exoskeletonData) return <div>Loading...</div>;
 
   return (
     <div id="الهيكل-الخارجي">
       <div className="space-y-5 mt-6">
-        {exoskeleton.itemis.map((item, idx) => (
+        {exoskeletonData.itemis.map((item, idx) => (
           <Disclosure key={idx}>
             {({ open }) => (
               <>
@@ -262,7 +154,7 @@ function Exoskeleton() {
                     "tablet",
                   ].includes(Filter) &&
                     (() => {
-                      const src = exoskeleton.itemis[0]?.control[Filter] ?? [];
+                      const src = exoskeletonData.itemis[0]?.control[Filter] ?? [];
                       const mid = Math.ceil(src.length / 2);
                       const cols = [src.slice(0, mid), src.slice(mid)];
 

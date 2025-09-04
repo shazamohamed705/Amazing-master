@@ -21,11 +21,11 @@ const GRADES = [
 ];
 
 const INSPECTION_SECTIONS = [
-  { name: "الهيكل الخارجي", key: "الهيكل", icon: FaCarSide },
-  { name: "المحرك وناقل الحركة", key: "المحرك", icon: FaCogs },
-  { name: "الشاصي والهيكل", key: "الشاصي", icon: FaCogs },
-  { name: "نظام التوجيه", key: "التوجيه", icon: FaCarSide },
-  { name: "النظام الكهربائي", key: "الكهرباء", icon: FaShieldAlt },
+  { name: "الهيكل الخارجي", key: "الهيكل الخارجي", icon: FaCarSide },
+  { name: "المحرك وناقل الحركة", key: "المحرك وناقل الحركة", icon: FaCogs },
+  { name: "الشاصي والهيكل", key: "الشاصي والهيكل", icon: FaCogs },
+  { name: "نظام التعليق والتوجيه", key: "نظام التعليق والتوجيه", icon: FaCarSide },
+  { name: "النظام الكهربائي", key: "النظام الكهربائي", icon: FaShieldAlt },
 ];
 
 const FEATURES = [
@@ -37,13 +37,81 @@ const FEATURES = [
   "نظام الرادار", "تنبيه التصادم", "كراسي كهربائي",
 ];
 
-// Service ID mapping for better performance
+// Service ID mapping based on actual data structure
 const SERVICE_ID_MAP = {
-  1: "الهيكل",    // Body/Exterior
-  2: "الشاصي",    // Chassis
-  3: "المحرك",    // Engine/Transmission
-  4: "التوجيه",   // Suspension/Steering
-  5: "الكهرباء"   // Electrical
+  1: "الهيكل الخارجي",    // Body/Exterior - Front Bumper, Rear Bumper, Fenders, Doors, etc.
+  2: "الشاصي والهيكل",    // Chassis - Chassis Dimensions, Frame, etc.
+  3: "المحرك وناقل الحركة", // Engine/Transmission - Engine Performance, Transmission, Hybrid System, etc.
+  4: "نظام التعليق والتوجيه", // Suspension/Steering - Suspension Damping, Steering Assembly, etc.
+  5: "النظام الكهربائي"   // Electrical - Battery, Electrical Systems
+};
+
+// Optimized data processing functions
+const processInspectionData = (data) => {
+  if (!data) return null;
+  
+  const reportData = data.data || data;
+  const points = reportData.inspection_reports_points || [];
+  
+  // Calculate scores by service with better error handling
+  const serviceScores = points.reduce((acc, point) => {
+    const serviceId = point.point?.services_id;
+    if (!serviceId) return acc;
+    
+    if (!acc[serviceId]) {
+      acc[serviceId] = { 
+        total: 0, 
+        max: 0, 
+        passed: 0, 
+        count: 0,
+        points: [] // Store individual points for detailed view
+      };
+    }
+    
+    const scoreAchieved = parseFloat(point.score_achieved || 0);
+    const maxScore = parseFloat(point.max_score || 0);
+    
+    acc[serviceId].total += scoreAchieved;
+    acc[serviceId].max += maxScore;
+    acc[serviceId].count += 1;
+    if (point.point_passed) acc[serviceId].passed += 1;
+    
+    // Store point details
+    acc[serviceId].points.push({
+      id: point.id,
+      name_ar: point.point?.name_ar,
+      name_en: point.point?.name_en,
+      score_achieved: scoreAchieved,
+      max_score: maxScore,
+      point_condition: point.point_condition,
+      point_passed: point.point_passed,
+      point_notes: point.point_notes,
+      point_images: point.point_images,
+      requires_immediate_attention: point.requires_immediate_attention
+    });
+    
+    return acc;
+  }, {});
+  
+  // Calculate overall statistics
+  const totalScore = points.reduce((sum, point) => sum + parseFloat(point.score_achieved || 0), 0);
+  const maxPossibleScore = points.reduce((sum, point) => sum + parseFloat(point.max_score || 0), 0);
+  const overallPercentage = maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0;
+  
+  return {
+    ...reportData,
+    serviceScores,
+    totalPoints: points.length,
+    passedPoints: points.filter(p => p.point_passed).length,
+    failedPoints: points.filter(p => !p.point_passed).length,
+    totalScore,
+    maxPossibleScore,
+    calculatedPercentage: overallPercentage,
+    // Ensure we have the calculated values even if API doesn't provide them
+    total_score: reportData.total_score || totalScore,
+    max_possible_score: reportData.max_possible_score || maxPossibleScore,
+    percentage_score: reportData.percentage_score || overallPercentage
+  };
 };
 
 // Utility functions - optimized
@@ -253,29 +321,33 @@ function ReportData() {
     return { passedPoints: passed, totalPoints: total };
   }, [inspectionPoints]);
 
-  // Optimized inspection status calculation
+  // Optimized inspection status calculation using processed data
   const getInspectionStatusForSection = useCallback((sectionKey) => {
-    if (!inspectionPoints.length) return "neutral";
+    if (!reportData?.serviceScores) return "neutral";
     
-    const sectionPoints = inspectionPoints.filter(point => {
-      const serviceId = point.point?.services_id;
-      const sectionName = point.point?.section;
-      
-      const mappedSection = SERVICE_ID_MAP[serviceId];
-      
-      return mappedSection?.toLowerCase().includes(sectionKey.toLowerCase()) ||
-             sectionName?.toLowerCase().includes(sectionKey.toLowerCase());
-    });
+    // Find service ID by exact match first, then partial match
+    let serviceId = Object.keys(SERVICE_ID_MAP).find(id => 
+      SERVICE_ID_MAP[id] === sectionKey
+    );
     
-    if (sectionPoints.length === 0) return "neutral";
+    if (!serviceId) {
+      serviceId = Object.keys(SERVICE_ID_MAP).find(id => 
+        SERVICE_ID_MAP[id]?.toLowerCase().includes(sectionKey.toLowerCase()) ||
+        sectionKey.toLowerCase().includes(SERVICE_ID_MAP[id]?.toLowerCase())
+      );
+    }
     
-    const passed = sectionPoints.filter(point => point.point_passed).length;
-    const total = sectionPoints.length;
+    if (!serviceId || !reportData.serviceScores[serviceId]) return "neutral";
     
-    if (passed === total) return "success";
-    if (passed > total / 2) return "warning";
+    const serviceData = reportData.serviceScores[serviceId];
+    const percentage = serviceData.max > 0 ? (serviceData.total / serviceData.max) * 100 : 0;
+    
+    // More nuanced status calculation
+    if (percentage >= 85) return "success";
+    if (percentage >= 70) return "warning";
+    if (percentage >= 50) return "error";
     return "error";
-  }, [inspectionPoints]);
+  }, [reportData?.serviceScores]);
 
   // Memoized inspections array
   const inspections = useMemo(() => {
@@ -294,11 +366,12 @@ function ReportData() {
     return [...sections, photoSection];
   }, [getInspectionStatusForSection, reportData?.inspection_images]);
 
-  // Optimized car info calculation
+  // Optimized car info calculation with better data mapping
   const carInfo = useMemo(() => {
     if (!reportData) return { bodyType: "-" };
 
     const vehicle = vehicleData || reportData.vehicle || reportData.vehicle_data || {};
+    const contact = reportData.vehicle_contact || {};
     
     return {
       image: vehicle.image || vehicle.photo || "/img1.png",
@@ -316,7 +389,10 @@ function ReportData() {
       fuelType: vehicle.fuel_type || "-",
       transmission: vehicle.transmission_type || "-",
       drivetrain: vehicle.drivetrain || "-",
-      bodyType: vehicle.body_type || "-"
+      bodyType: vehicle.body_type || "-",
+      ownerName: contact.owner_name || "-",
+      ownerPhone: contact.owner_phone_number || "-",
+      applicantEmail: contact.applicant_email || "-"
     };
   }, [reportData, vehicleData, navigationData?.reportNum]);
 
@@ -349,7 +425,7 @@ function ReportData() {
     return reasons || [];
   }, [reportData, inspectionPoints]);
 
-  // Optimized API call with better error handling
+  // Optimized API call with better error handling and dynamic URL
   useEffect(() => {
     const fetchData = async () => {
       const storedToken = localStorage.getItem("token");
@@ -365,53 +441,33 @@ function ReportData() {
       // Try to fetch from inspection reports API first
       if (!navigationData?.report && !navigationData?.searchResults) {
         try {
+          // Use dynamic report number from navigation or default
+          const reportNumber = navigationData?.reportNum || "USR-2-VEH-2-1756969611";
           const response = await axios.get(
-            "https://demo.syarahplus.sa/backend/api/users/inspection/reports",
+            `https://demo.syarahplus.sa/backend/api/users/inspection/reports/${reportNumber}`,
             { headers: { Authorization: `Bearer ${storedToken}` } }
           );
           
-          if (response.data?.data && response.data.data.length > 0) {
-            const reports = response.data.data;
-            // Use the first report or find specific one
-            let targetReport = reports[0];
+          if (response.data?.success && response.data?.data) {
+            const processedData = processInspectionData(response.data);
+            setReportData(processedData);
             
-            if (navigationData?.reportNum) {
-              const foundReport = reports.find(report => 
-                report.report_number === navigationData.reportNum
-              );
-              if (foundReport) {
-                targetReport = foundReport;
-              }
-            }
-            
-            setReportData(targetReport);
-            
-            const percentage = targetReport.percentage || 
-                              targetReport.percentage_score || 
-                              targetReport.total_score || 0;
+            // Use the calculated percentage from API or calculated value
+            const percentage = response.data.percentage || 
+                              processedData.percentage_score || 
+                              processedData.calculatedPercentage || 0;
             setScore(percentage);
             
-            if (targetReport.vehicle) {
-              setVehicleData(targetReport.vehicle);
-            } else if (targetReport.vehicle_id && targetReport.vehicle_id ) {
-              try {
-                const vehicleResponse = await axios.get(
-                  `https://demo.syarahplus.sa/backend/api/users/vehicles/${targetReport.vehicle}`,
-                  { headers: { Authorization: `Bearer ${storedToken}` } }
-                );
-                
-                if (vehicleResponse.data?.data) {
-                  setVehicleData(vehicleResponse.data.data);
-                }
-              } catch (vehicleErr) {
-                // Continue without vehicle data
-              }
+            // Set vehicle data if available
+            if (response.data.data?.vehicle) {
+              setVehicleData(response.data.data.vehicle);
             }
             
             setLoading(false);
             return;
           }
         } catch (apiError) {
+          console.error("API Error:", apiError);
           // API failed, continue to navigation data
         }
       }
@@ -432,7 +488,8 @@ function ReportData() {
             }
           }
           
-          setReportData(targetReport);
+          const processedData = processInspectionData(targetReport);
+          setReportData(processedData);
           
           const percentage = targetReport.percentage || 
                             targetReport.percentage_score || 
@@ -441,41 +498,21 @@ function ReportData() {
           
           if (targetReport.vehicle) {
             setVehicleData(targetReport.vehicle);
-          } else if (targetReport.vehicle_id && targetReport.vehicle_id !== 2) {
-            try {
-              const vehicleResponse = await axios.get(
-                `https://demo.syarahplus.sa/backend/api/users/vehicles/${targetReport.vehicle}`,
-                { headers: { Authorization: `Bearer ${storedToken}` } }
-              );
-              
-              if (vehicleResponse.data?.data) {
-                setVehicleData(vehicleResponse.data.data);
-              }
-            } catch (vehicleErr) {
-              // Continue without vehicle data
-            }
           }
         } else if (navData?.data) {
-          const reportData = navData.data;
-          const enhancedReportData = {
-            ...reportData,
-            total_score: navData.total_score,
-            max_possible_score: navData.max_possible_score,
-            percentage_score: navData.percentage,
-            grade: navData.grade,
-            failure_reasons: navData.failure_reasons
-          };
-          
-          setReportData(enhancedReportData);
+          // Handle the new API response structure
+          const processedData = processInspectionData(navData);
+          setReportData(processedData);
           
           const percentage = navData.percentage || navData.percentage_score || 0;
           setScore(percentage);
           
-          if (reportData.vehicle) {
-            setVehicleData(reportData.vehicle);
+          if (navData.data?.vehicle) {
+            setVehicleData(navData.data.vehicle);
           }
         } else {
-          setReportData(navData);
+          const processedData = processInspectionData(navData);
+          setReportData(processedData);
           
           const percentage = navData.percentage || 
                             navData.percentage_score || 
@@ -641,53 +678,77 @@ function ReportData() {
                     <div className="grid grid-cols-2 gap-x-8 text-base dark:text-white">
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">النوع</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.body_type || reportData?.vehicle?.body_type || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.bodyType}</span>
                       </div>
                       <div className="flex justify-between border-b py-2 dark:text-white">
                         <span className="text-gray-600 font-semibold">الموديل</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.model || reportData?.vehicle?.model || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.model}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">الفئة</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.vehicle_category || reportData?.vehicle?.vehicle_category || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.category}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">سنة الصنع</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.production_year || reportData?.vehicle?.production_year || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.year}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">سعة المحرك</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.engine_capacity_cc ? `${vehicleData.engine_capacity_cc} CC` : reportData?.vehicle?.engine_capacity_cc ? `${reportData.vehicle.engine_capacity_cc} CC` : '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.engineType}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">العداد الحالي</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.mileage_km ? `${vehicleData.mileage_km} KM` : reportData?.vehicle?.mileage_km ? `${reportData.vehicle.mileage_km} KM` : '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.mileage}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">رقم اللوحة</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.license_plate_number || reportData?.vehicle?.license_plate_number || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.licensePlate}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">لون السيارة</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.exterior_color || reportData?.vehicle?.exterior_color || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.color}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">نوع المحرك</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.fuel_type || reportData?.vehicle?.fuel_type || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.fuelType}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">ناقل الحركة</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.transmission_type || reportData?.vehicle?.transmission_type || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.transmission}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">نوع الدفع</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.drivetrain || reportData?.vehicle?.drivetrain || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.drivetrain}</span>
                       </div>
                       <div className="flex justify-between border-b py-2">
                         <span className="text-gray-600 font-semibold dark:text-white">نوع الهيكل</span>
-                        <span className="font-semibold dark:text-white">{vehicleData?.body_type || reportData?.vehicle?.body_type || '-'}</span>
+                        <span className="font-semibold dark:text-white">{carInfo.bodyType}</span>
                       </div>
                     </div>
+
+                    {/* Owner Information Section */}
+                    {(carInfo.ownerName !== "-" || carInfo.ownerPhone !== "-" || carInfo.applicantEmail !== "-") && (
+                      <>
+                        <h2 className="text-xl font-bold text-gray-900 border-b pb-2 mt-6 dark:text-white">
+                          معلومات المالك
+                        </h2>
+
+                        <div className="grid grid-cols-2 gap-x-8 text-base dark:text-white">
+                          <div className="flex justify-between border-b py-2">
+                            <span className="text-gray-600 font-semibold dark:text-white">اسم المالك</span>
+                            <span className="font-semibold dark:text-white">{carInfo.ownerName}</span>
+                          </div>
+                          <div className="flex justify-between border-b py-2">
+                            <span className="text-gray-600 font-semibold dark:text-white">رقم الهاتف</span>
+                            <span className="font-semibold dark:text-white">{carInfo.ownerPhone}</span>
+                          </div>
+                          <div className="flex justify-between border-b py-2">
+                            <span className="text-gray-600 font-semibold dark:text-white">البريد الإلكتروني</span>
+                            <span className="font-semibold dark:text-white">{carInfo.applicantEmail}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   {/* Features Section */}
@@ -721,6 +782,83 @@ function ReportData() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Detailed Inspection Points */}
+                  {reportData?.serviceScores && (
+                    <div className="bg-white dark:bg-black border border-white dark:border-white shadow rounded-lg p-6">
+                      <h2 className="text-xl font-bold text-gray-900 border-b pb-2 mb-4 dark:text-white">
+                        تفاصيل نقاط الفحص
+                      </h2>
+                      
+                      <div className="space-y-4">
+                        {Object.entries(reportData.serviceScores).map(([serviceId, serviceData]) => {
+                          const serviceName = SERVICE_ID_MAP[serviceId] || `خدمة ${serviceId}`;
+                          const percentage = serviceData.max > 0 ? (serviceData.total / serviceData.max) * 100 : 0;
+                          const status = percentage >= 85 ? "success" : percentage >= 70 ? "warning" : "error";
+                          
+                          return (
+                            <div key={serviceId} className="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+                              <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{serviceName}</h3>
+                                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                  status === "success" ? "bg-green-100 text-green-800" :
+                                  status === "warning" ? "bg-yellow-100 text-yellow-800" :
+                                  "bg-red-100 text-red-800"
+                                }`}>
+                                  {percentage.toFixed(1)}%
+                                </span>
+                              </div>
+                              
+                              <div className="grid grid-cols-3 gap-4 text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                <div>
+                                  <span className="font-medium">النقاط المنجزة:</span> {serviceData.passed}/{serviceData.count}
+                                </div>
+                                <div>
+                                  <span className="font-medium">النتيجة:</span> {serviceData.total.toFixed(1)}/{serviceData.max.toFixed(1)}
+                                </div>
+                                <div>
+                                  <span className="font-medium">الحالة:</span> 
+                                  <span className={`ml-1 ${
+                                    status === "success" ? "text-green-600" :
+                                    status === "warning" ? "text-yellow-600" :
+                                    "text-red-600"
+                                  }`}>
+                                    {status === "success" ? "ممتاز" : status === "warning" ? "جيد" : "يحتاج صيانة"}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              {/* Individual Points Details */}
+                              {serviceData.points && serviceData.points.length > 0 && (
+                                <div className="mt-3">
+                                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">تفاصيل النقاط:</h4>
+                                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                                    {serviceData.points.map((point, idx) => (
+                                      <div key={idx} className="flex justify-between items-center text-xs bg-gray-50 dark:bg-gray-800 p-2 rounded">
+                                        <span className="text-gray-700 dark:text-gray-300">
+                                          {point.name_ar || point.name_en || `نقطة ${point.id}`}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                          <span className={`px-2 py-1 rounded text-xs ${
+                                            point.point_passed ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                          }`}>
+                                            {point.point_condition || (point.point_passed ? "نجح" : "فشل")}
+                                          </span>
+                                          <span className="text-gray-500">
+                                            {point.score_achieved}/{point.max_score}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </Disclosure.Panel>
             </>

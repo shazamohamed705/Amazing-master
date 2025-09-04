@@ -7,11 +7,7 @@ function ReportSearch() {
   const [report_number, setReport_number] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
-
-  // بيانات تجريبية للاختبار
-  
 
   const handleSearch = async () => {
     if (!vin_number && !report_number) {
@@ -31,76 +27,38 @@ function ReportSearch() {
         return;
       }
 
-      // محاولة الاتصال بالباك إند الحقيقي
-      try {
-        const url = `https://demo.syarahplus.sa/backend/api/users/inspection/reports?vin_number=${vin_number.trim()}&report_number=${report_number.trim()}`;
-        
-        const response = await fetch(url, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const url = `https://demo.syarahplus.sa/backend/api/users/inspection/reports?vin_number=${vin_number.trim()}&report_number=${report_number.trim()}`;
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Report Search Response:", data);
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-          if (data.success) {
-            console.log("🔍 Search successful, navigating with data:", data.data);
-            navigate("/report-result", {
-              state: {
-                report: data.data,
-                vin: vin_number.trim(),
-                reportNum: report_number.trim(),
-                searchResults: data.data,
-                fromSearch: true
-              },
-            });
-            return;
-          } else {
-            setError(data.message || "لم يتم العثور على التقرير");
-          }
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Report Search Response:", data);
+
+        if (data.success) {
+          navigate("/report-result", {
+            state: {
+              report: data.data,
+              vin: vin_number.trim(),
+              reportNum: report_number.trim(),
+              searchResults: data.data,
+              fromSearch: true,
+            },
+          });
         } else {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          setError(data.message || "لم يتم العثور على التقرير");
         }
-      } catch (apiError) {
-        console.log("API Error:", apiError.message);
-        
-        // استخدام البيانات التجريبية إذا فشل API
-        console.log("🔄 Using mock data for testing...");
-        
-        // محاكاة تأخير الشبكة
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // تحديث البيانات التجريبية بالقيم المدخلة
-        const updatedMockData = {
-          ...mockData,
-          data: {
-            ...mockData.data,
-            report_number: report_number.trim() || mockData.data.report_number,
-            vehicle: {
-              ...mockData.data.vehicle,
-              vin_number: vin_number.trim() || mockData.data.vehicle.vin_number
-            }
-          }
-        };
-
-        navigate("/report-result", {
-          state: {
-            report: updatedMockData.data,
-            vin: vin_number.trim() || updatedMockData.data.vehicle.vin_number,
-            reportNum: report_number.trim() || updatedMockData.data.report_number,
-            searchResults: updatedMockData.data,
-            fromSearch: true,
-            isMockData: true
-          },
-        });
-        return;
+      } else {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (err) {
       console.error("Search error:", err);
-      setError("حصل خطأ في الاتصال بالسيرفر");
+      setError("تعذر جلب البيانات من السيرفر، حاول مرة أخرى لاحقًا");
     } finally {
       setLoading(false);
     }
@@ -153,8 +111,6 @@ function ReportSearch() {
 
       {/* رسائل الخطأ */}
       {error && <p className="text-red-400 mt-6">{error}</p>}
-
-   
     </div>
   );
 }
