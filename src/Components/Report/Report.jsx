@@ -11,98 +11,7 @@ function ReportSearch() {
   const navigate = useNavigate();
 
   // بيانات تجريبية للاختبار
-  const mockData = {
-    success: true,
-    data: {
-      id: 1,
-      report_number: "RPT-2024-001",
-      status: "completed",
-      percentage: 85,
-      grade: "A",
-      total_score: 85,
-      max_possible_score: 100,
-      created_at: "2024-01-15T10:30:00Z",
-      inspection_reports_points: [
-        {
-          point_id: 1,
-          point_passed: true,
-          score_achieved: 10,
-          max_score: 10,
-          point_condition: "ممتاز",
-          point_notes: "الهيكل الخارجي بحالة ممتازة",
-          point: {
-            point_id: 1,
-            name_ar: "الهيكل الخارجي",
-            name_en: "Exterior Body",
-            section: "الهيكل",
-            services_id: 1,
-            explanation_ar: "فحص شامل للهيكل الخارجي",
-            explanation_en: "Comprehensive exterior body inspection"
-          }
-        },
-        {
-          point_id: 2,
-          point_passed: true,
-          score_achieved: 9,
-          max_score: 10,
-          point_condition: "جيد",
-          point_notes: "المحرك يعمل بشكل جيد",
-          point: {
-            point_id: 2,
-            name_ar: "المحرك",
-            name_en: "Engine",
-            section: "المحرك",
-            services_id: 3,
-            explanation_ar: "فحص أداء المحرك",
-            explanation_en: "Engine performance inspection"
-          }
-        },
-        {
-          point_id: 3,
-          point_passed: false,
-          score_achieved: 6,
-          max_score: 10,
-          point_condition: "يحتاج صيانة",
-          point_notes: "نظام الفرامل يحتاج صيانة",
-          point: {
-            point_id: 3,
-            name_ar: "نظام الفرامل",
-            name_en: "Brake System",
-            section: "السلامة",
-            services_id: 5,
-            explanation_ar: "فحص نظام الفرامل",
-            explanation_en: "Brake system inspection"
-          }
-        }
-      ],
-      vehicle: {
-        id: 1,
-        vin_number: "1HGBH41JXMN109186",
-        manufacturer_id: "هوندا",
-        model: "سيفيك",
-        vehicle_category: "سيدان",
-        production_year: 2020,
-        mileage_km: 45000,
-        exterior_color: "أبيض",
-        engine_capacity_cc: 2000,
-        fuel_type: "بنزين",
-        transmission_type: "أوتوماتيك",
-        drivetrain: "أمامي",
-        body_type: "سيدان",
-        license_plate_number: "ABC-123",
-        image: "https://via.placeholder.com/300x200/4F46E5/FFFFFF?text=Honda+Civic"
-      },
-      failure_reasons: [
-        {
-          reason: "نظام الفرامل يحتاج صيانة فورية",
-          point: "نظام الفرامل",
-          score: "6/10",
-          section: "السلامة",
-          serviceId: 5
-        }
-      ]
-    }
-  };
+  
 
   const handleSearch = async () => {
     if (!vin_number && !report_number) {
@@ -245,11 +154,7 @@ function ReportSearch() {
       {/* رسائل الخطأ */}
       {error && <p className="text-red-400 mt-6">{error}</p>}
 
-      {/* معلومات إضافية للمطورين */}
-      <div className="mt-8 p-4 bg-blue-900/20 rounded-lg text-blue-300 text-sm max-w-2xl text-center">
-        <p className="mb-2">💡 للمطورين: إذا فشل الاتصال بالباك إند، سيتم استخدام بيانات تجريبية للاختبار</p>
-        <p className="text-xs opacity-75">يمكنك إدخال أي قيم للاختبار</p>
-      </div>
+   
     </div>
   );
 }
